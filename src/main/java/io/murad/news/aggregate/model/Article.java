@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,4 +20,9 @@ public class Article {
     private String title;
 
     private String url;
+
+    public Article(String title, String url) {
+        this.title = title;
+        this.url = url;
+    }
 }

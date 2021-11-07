@@ -1,5 +1,8 @@
 package io.murad.news.aggregate.service;
 
+import io.murad.news.aggregate.model.Article;
+import io.murad.news.aggregate.repository.ArticleRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -8,25 +11,38 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class NewsService {
 
+    private final ArticleRepository articleRepository;
 
     public void storeNews() throws IOException {
+        List<Article> articles = new ArrayList<Article>();
         Document doc = Jsoup.connect("https://www.prothomalo.com/").get();
         log.info(doc.title());
         Elements el = doc.getElementsByClass("newsHeadline-m__title-link__1puEG");
         for(Element e : el){
-            log.info(e.text());
-            log.info(e.attr("href"));
-            Elements images = e.getElementsByTag("img");
-            for(Element image : images){
-                String imgUrl = image.absUrl("src");
-                log.info(imgUrl);
-            }
+//            log.info(e.text());
+//            log.info(e.attr("href"));
+            String title = e.text();
+            String url = e.attr("href");
+
+                articles.add(new Article(title, url));
+
+//            Elements images = e.getElementsByTag("img");
+//            for(Element image : images){
+//                String imgUrl = image.absUrl("src");
+//                log.info(imgUrl);
+//            }
         }
+        Article article  = new Article();
+        log.info(article.getTitle());
+        log.info(article.getUrl());
 
 //        Elements image = doc.select("img.ClassName qt-image");
 //        Elements image = doc.getElementsByClass("qt-image");
