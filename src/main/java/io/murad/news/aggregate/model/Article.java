@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table
+@Table(name = "article")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,8 +17,10 @@ public class Article {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private String title;
 
+    @Column
     private String url;
 
     public Article(String title, String url) {

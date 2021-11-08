@@ -10,6 +10,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,24 +26,25 @@ public class NewsService {
         List<Article> articles = new ArrayList<Article>();
         Document doc = Jsoup.connect("https://www.prothomalo.com/").get();
         log.info(doc.title());
-        Elements el = doc.getElementsByClass("newsHeadline-m__title-link__1puEG");
-        for(Element e : el){
+        Elements prothomAloNews = doc.getElementsByClass("newsHeadline-m__title-link__1puEG");
+        for(Element news : prothomAloNews){
 //            log.info(e.text());
 //            log.info(e.attr("href"));
-            String title = e.text();
-            String url = e.attr("href");
+            String title = news.text();
+            String url = news.attr("href");
 
                 articles.add(new Article(title, url));
+                log.info(String.valueOf(news.childNodes()));
 
+//            log.info(String.valueOf(news.childNode(1).attr("src")));
 //            Elements images = e.getElementsByTag("img");
 //            for(Element image : images){
 //                String imgUrl = image.absUrl("src");
 //                log.info(imgUrl);
 //            }
         }
-        Article article  = new Article();
-        log.info(article.getTitle());
-        log.info(article.getUrl());
+//        articleRepository.saveAll(articles);
+
 
 //        Elements image = doc.select("img.ClassName qt-image");
 //        Elements image = doc.getElementsByClass("qt-image");
