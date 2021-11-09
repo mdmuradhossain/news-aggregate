@@ -14,11 +14,15 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 @Service
 @Slf4j
 @AllArgsConstructor
 public class NewsService {
+
+//    Locale localeFromBuilder = new Locale.Builder().setLanguage("bn").setRegion("BD").build();
 
     private final ArticleRepository articleRepository;
 
@@ -27,14 +31,14 @@ public class NewsService {
         Document doc = Jsoup.connect("https://www.prothomalo.com/").get();
         log.info(doc.title());
         Elements prothomAloNews = doc.getElementsByClass("newsHeadline-m__title-link__1puEG");
-        for(Element news : prothomAloNews){
+        for (Element news : prothomAloNews) {
 //            log.info(e.text());
 //            log.info(e.attr("href"));
             String title = news.text();
             String url = news.attr("href");
 
-                articles.add(new Article(title, url));
-                log.info(String.valueOf(news.childNodes()));
+//                articles.add(new Article(title, url));
+//                log.info(news);
 
 //            log.info(String.valueOf(news.childNode(1).attr("src")));
 //            Elements images = e.getElementsByTag("img");
@@ -51,6 +55,31 @@ public class NewsService {
 //        for (Element img : image) {
 //            String src = img.absUrl("src");
 //            log.info(src);
+//        }
+        Document doc2 = Jsoup.connect("https://www.prothomalo.com/collection/latest").get();
+        Elements latestNews = doc2.getElementsByClass("customStoryCard9-m__wrapper__yEFJV");
+//        Elements latestNews = doc2.select("div.customStoryCard9-m__wrapper__yEFJV");
+
+//        System.out.println(latestNews);
+        for (Element ln : latestNews) {
+            String title = ln.getElementsByTag("h2").text();
+            String url = ln.getElementsByTag("a").attr("href");
+            String imgUrl = ln.getElementsByTag("img").attr("src");
+            articles.add(new Article(title, url, imgUrl));
+            System.out.println(ln.getElementsByTag("h2").text());
+//            System.out.println(Objects.requireNonNull(ln.getElementsByTag("a").first()).text());
+            System.out.println(ln.getElementsByTag("a").attr("href"));
+            System.out.println(ln.getElementsByTag("img").attr("src"));
+        }
+
+        articleRepository.saveAll(articles);
+//            Elements latestNewsElements = Objects.requireNonNull(latestNews.first()).getAllElements();
+//            System.out.println(latestNewsElements);
+//
+//        for(Element ln : latestNewsElements){
+//            System.out.println(ln.getElementsByTag("h2").text());
+//            System.out.println(Objects.requireNonNull(ln.getElementsByTag("a")).attr("href"));
+//            System.out.println(ln.getElementsByTag("img").attr("src"));
 //        }
     }
 }
