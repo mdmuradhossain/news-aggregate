@@ -9,6 +9,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -20,12 +21,14 @@ import java.util.Objects;
 @Service
 @Slf4j
 @AllArgsConstructor
+@Transactional
 public class NewsService {
 
 //    Locale localeFromBuilder = new Locale.Builder().setLanguage("bn").setRegion("BD").build();
 
     private final ArticleRepository articleRepository;
 
+    @PostConstruct
     public void storeNews() throws IOException {
         List<Article> articles = new ArrayList<Article>();
         Document doc = Jsoup.connect("https://www.prothomalo.com/").get();
@@ -63,13 +66,17 @@ public class NewsService {
 //        System.out.println(latestNews);
         for (Element ln : latestNews) {
             String title = ln.getElementsByTag("h2").text();
+            String content = ln.getElementsByTag("span").text();
             String url = ln.getElementsByTag("a").attr("href");
             String imgUrl = ln.getElementsByTag("img").attr("src");
-            articles.add(new Article(title, url, imgUrl));
+
+            articles.add(new Article(title, url, imgUrl,content));
+
             System.out.println(ln.getElementsByTag("h2").text());
 //            System.out.println(Objects.requireNonNull(ln.getElementsByTag("a").first()).text());
             System.out.println(ln.getElementsByTag("a").attr("href"));
-            System.out.println(ln.getElementsByTag("img").attr("src"));
+//            System.out.println(ln.getElementsByTag("img").attr("src"));
+            System.out.println(ln.getElementsByTag("picture"));
         }
 
         articleRepository.saveAll(articles);
@@ -81,5 +88,9 @@ public class NewsService {
 //            System.out.println(Objects.requireNonNull(ln.getElementsByTag("a")).attr("href"));
 //            System.out.println(ln.getElementsByTag("img").attr("src"));
 //        }
+    }
+
+    public List<Article> getAllNews(){
+        return articleRepository.findAll();
     }
 }

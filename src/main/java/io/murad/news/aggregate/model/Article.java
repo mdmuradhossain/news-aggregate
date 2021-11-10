@@ -27,6 +27,10 @@ public class Article {
     @Column
     private String imgUrl;
 
+    @Lob
+    @Column
+    private String content;
+
     public Article(String title, String url) {
         this.title = title;
         this.url = url;
@@ -36,5 +40,12 @@ public class Article {
         this.title = title;
         this.url = url;
         this.imgUrl = imgUrl;
+    }
+
+    public Article(String title, String url, String imgUrl,String content) {
+        this.title = title;
+        this.url = url;
+        this.imgUrl = imgUrl;
+        this.content = content;
     }
 }
