@@ -19,7 +19,7 @@ public class NewsController {
 
     @GetMapping()
     public String news(Model model) throws IOException {
-        newsService.storeNews();
+//        newsService.storeNews();
         model.addAttribute("articles",newsService.getAllNews());
         return "news/news";
     }

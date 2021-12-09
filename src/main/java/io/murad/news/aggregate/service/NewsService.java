@@ -8,6 +8,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,7 @@ public class NewsService {
 
     private final ArticleRepository articleRepository;
 
-    @PostConstruct
+    @Scheduled(fixedRate = 3600 * 1000)
     public void storeNews() throws IOException {
         List<Article> articles = new ArrayList<Article>();
         Document doc = Jsoup.connect("https://www.prothomalo.com/").get();
