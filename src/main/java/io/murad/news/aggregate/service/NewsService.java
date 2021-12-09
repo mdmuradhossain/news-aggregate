@@ -63,7 +63,7 @@ public class NewsService {
         Document doc2 = Jsoup.connect("https://www.prothomalo.com/collection/latest").get();
         Elements latestNews = doc2.getElementsByClass("customStoryCard9-m__wrapper__yEFJV");
 //        Elements latestNews = doc2.select("div.customStoryCard9-m__wrapper__yEFJV");
-
+        Article article = new Article();
 //        System.out.println(latestNews);
         for (Element ln : latestNews) {
             String title = ln.getElementsByTag("h2").text();
@@ -71,7 +71,12 @@ public class NewsService {
             String url = ln.getElementsByTag("a").attr("href");
             String imgUrl = ln.getElementsByTag("img").attr("src");
 
-            articles.add(new Article(title, url, imgUrl,content));
+            if (title.equals(article.getTitle()) || content.equals(article.getContent()) || url.equals(article.getUrl())) {
+                log.info("Already Exists");
+            } else {
+                articles.add(new Article(title, url, imgUrl, content));
+            }
+
 
             System.out.println(ln.getElementsByTag("h2").text());
 //            System.out.println(Objects.requireNonNull(ln.getElementsByTag("a").first()).text());
@@ -91,7 +96,7 @@ public class NewsService {
 //        }
     }
 
-    public List<Article> getAllNews(){
+    public List<Article> getAllNews() {
         return articleRepository.findAll();
     }
 }
