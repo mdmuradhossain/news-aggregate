@@ -4,6 +4,7 @@ import io.murad.news.aggregate.model.Article;
 import io.murad.news.aggregate.repository.ArticleRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -33,6 +34,11 @@ public class NewsService {
     public void storeNews() throws IOException {
         List<Article> articles = new ArrayList<Article>();
         Document doc = Jsoup.connect("https://www.prothomalo.com/").get();
+        Connection.Response resp = Jsoup.connect("https://www.prothomalo.com/") //
+                .timeout(20000) //
+                .method(Connection.Method.GET) //
+                .execute();
+
         log.info(doc.title());
         Elements prothomAloNews = doc.getElementsByClass("newsHeadline-m__title-link__1puEG");
         for (Element news : prothomAloNews) {
@@ -69,6 +75,7 @@ public class NewsService {
             String title = ln.getElementsByTag("h2").text();
             String content = ln.getElementsByTag("span").text();
             String url = ln.getElementsByTag("a").attr("href");
+            String time = ln.getElementsByTag("time").text();
             String imgUrl = ln.getElementsByTag("img").attr("src");
 
             if (title.equals(article.getTitle()) || content.equals(article.getContent()) || url.equals(article.getUrl())) {
@@ -82,7 +89,9 @@ public class NewsService {
 //            System.out.println(Objects.requireNonNull(ln.getElementsByTag("a").first()).text());
             System.out.println(ln.getElementsByTag("a").attr("href"));
 //            System.out.println(ln.getElementsByTag("img").attr("src"));
-            System.out.println(ln.getElementsByTag("picture"));
+//            System.out.println(ln.getElementsByTag("picture"));
+            System.out.println(time);
+            System.out.println(imgUrl);
         }
 
         articleRepository.saveAll(articles);
